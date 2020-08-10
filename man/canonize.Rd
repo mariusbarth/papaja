@@ -4,7 +4,7 @@
 \alias{canonize}
 \title{Transform to a Canonical Table}
 \usage{
-canonize(x, stat_label = NULL, est_label = NULL)
+canonize(x, stat_label = NULL, est_label = NULL, term_label = "Term")
 }
 \arguments{
 \item{x}{A \code{data.frame}.}

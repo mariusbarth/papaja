@@ -202,6 +202,7 @@ canonize <- function(
   x
   , stat_label = NULL
   , est_label = NULL
+  , term_label = "Term"
 ) {
 
   # args <- list(...)
@@ -223,6 +224,7 @@ canonize <- function(
     , "coefficients" = est_label
     , "conf.int"     = conf_label
     , "statistic"    = stat_label
+    , "term" = term_label
   )
 
   names_in_lookup_names <- colnames(x) %in% names(lookup_names)
@@ -247,7 +249,7 @@ canonize <- function(
 #' @param ... Further arguments that may be passed to \code{\link{printnum}} to format original-scale estimates (i.e., columns \code{estimate} and \code{conf.int}).
 #' @keywords internal
 
-beautify <- function(x, standardized = FALSE, use_math = FALSE, ...) {
+beautify <- function(x, standardized = FALSE, use_math = FALSE, capitalize = TRUE, ...) {
 
   validate(x, check_class = "data.frame")
   validate(standardized, check_class = "logical", check_length = 1L) # we could vectorize here!
@@ -272,7 +274,7 @@ beautify <- function(x, standardized = FALSE, use_math = FALSE, ...) {
       args$x <- x[[i]]
       x[[i]] <- do.call("printnum", args)
     } else if (i == "term"){
-      x[[i]] <- prettify_terms(x[[i]], standardized = standardized)  # todo: standardized ???
+      x[[i]] <- prettify_terms(x[[i]], standardized = standardized, capitalize = capitalize)  # todo: standardized ???
     } else {
       x[[i]] <- printnum(x[[i]])
     }
@@ -321,19 +323,20 @@ sanitize_terms <- function(x, standardized = FALSE) {
 #' @param x Character. Vector of term-names to be prettified
 #' @param standardized Logical. If \code{TRUE} the name of the function \code{\link{scale}} will be
 #'    removed from term names.
+#' @param capitalize Logical. Determines whether term names are capitalized
 #'
 #' @examples
 #' NULL
 #' @keywords internal
 
-prettify_terms <- function(x, standardized = FALSE) {
+prettify_terms <- function(x, standardized = FALSE, capitalize = TRUE) {
   if(standardized) x <- gsub("scale\\(", "", x)       # Remove scale()
   x <- gsub(pattern = "\\(|\\)|`|.+\\$", replacement = "", x = x)                 # Remove parentheses and backticks
   x <- gsub('.+\\$|.+\\[\\["|"\\]\\]|.+\\[.*,\\s*"|"\\s*\\]', "", x) # Remove data.frame names
   x <- gsub("\\_|\\.", " ", x)                        # Remove underscores
   for (i in 1:length(x)) {
     x2 <- unlist(strsplit(x[i], split = ":"))
-    x2 <- capitalize(x2)
+    if(capitalize) x2 <- capitalize(x2)
     x[i] <- paste(x2, collapse = " $\\times$ ")
   }
   x

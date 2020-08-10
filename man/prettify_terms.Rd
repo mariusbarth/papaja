@@ -4,13 +4,15 @@
 \alias{prettify_terms}
 \title{Prettify term names}
 \usage{
-prettify_terms(x, standardized = FALSE)
+prettify_terms(x, standardized = FALSE, capitalize = TRUE)
 }
 \arguments{
 \item{x}{Character. Vector of term-names to be prettified}
 
 \item{standardized}{Logical. If \code{TRUE} the name of the function \code{\link{scale}} will be
 removed from term names.}
+
+\item{capitalize}{Logical. Determines whether term names are capitalized}
 }
 \description{
 Remove parentheses, replace colons with \code{$\\times$}. Useful to prettify term names in \code{apa_print()} tables.
